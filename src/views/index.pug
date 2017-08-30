@@ -1,0 +1,20 @@
+head
+  title Grid 
+  link(rel='stylesheet', href='/css/main.css', type='text/css')
+body
+  #container
+    .on-board
+     p Click and drag a point to create a line. Click a line to delete.
+    #canvas_wrapper
+      canvas#interactive
+      canvas#artboard
+      canvas#base
+    .about
+     p Send this page to a friend and #[wbr]watch changes in real-time. 
+     br
+     p (This project is still in the works - #[wbr]come back soon to see more features). 
+  script
+    if data
+        | var serverData = !{JSON.stringify(data)}
+  script(src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js")
+  script(src='/bundle.js')
