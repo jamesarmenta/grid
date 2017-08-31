@@ -1,0 +1,19 @@
+version: 0.1
+phases:
+  pre_build:
+    commands:
+      - echo Source Directory is $CODEBUILD_SRC_DIR
+      - echo Installing source NPM dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Compiling the code...
+      - npm start
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - index.babel.js
+    - public/**/*
