@@ -8,12 +8,10 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo Compiling the code...
       - npm run build
   post_build:
     commands:
       - echo Build completed on `date`
 artifacts:
   files:
-    - index.babel.js
-    - public/**/*
+    - dist/**/*
