@@ -10,14 +10,17 @@ import { lineIsValid } from './common/validateLine';
 import fb from './firebase-admin';
 
 let currentGridLines = [];
+let lines = [];
 
 fb.ref('/grid/').on('value', function(snapshot) {
   currentGridLines = [];
 
-  let lineKeys = Object.keys(snapshot.val());
+  let lineKeys = (snapshot.val()) ? Object.keys(snapshot.val()) : [];
+  lines = [];
 
   let i = 0;
   snapshot.forEach((item)=>{
+    lines.push(item.val())
     currentGridLines.push({key: lineKeys[i], line: item.val()});
     i++;
   });
