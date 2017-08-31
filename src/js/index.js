@@ -7,7 +7,7 @@ import fb from './firebase-client';
 
 fb.ref('/grid/').on('value', function(snapshot) {
   let lines = [];
-  snapshot.forEach((item)=>{
+  snapshot.forEach((item) => {
     lines.push(item.val());
   });
   localLines = lines;
@@ -51,6 +51,10 @@ function init() {
   ctx.scale(2, 2);
   artboard.scale(2, 2);
   base.scale(2, 2);
+
+  if (typeof serverData !== 'undefined') {
+    localLines = serverData;
+  };
 }
 
 /* ----------  INITIAL SETUP  ---------- */
@@ -63,9 +67,6 @@ function resetArtboard() {
   clear(base);
   clear(artboard);
 
-  if (typeof serverData !== 'undefined' && localLines == []) {
-    localLines = serverData;
-  };
 
   // DRAW GRID
   for (var i = 0; i < config.GRID_NUMBER_COL; i++) {
@@ -392,13 +393,13 @@ function saveLine(line) {
 
 function deleteLine(id) {
   let oldLength = localLines.length;
-  let updatedLines = localLines.filter((item)=>{
+  let updatedLines = localLines.filter((item) => {
     return item.id !== id;
   });
-  if (updatedLines.length == oldLength -1) {
+  if (updatedLines.length == oldLength - 1) {
     localLines = updatedLines;
     return true;
   } else {
-    return false; 
+    return false;
   }
 }
