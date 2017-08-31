@@ -6,7 +6,8 @@
   "scripts": {
     "start": "gulp build && node index.babel.js",
     "test": "gulp test",
-    "dev": "gulp"
+    "dev": "gulp",
+    "build": "gulp build"
   },
   "author": "",
   "license": "ISC",
