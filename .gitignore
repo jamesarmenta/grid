@@ -7,7 +7,7 @@
 /coverage
 
 # production
-/public
+/dist
 
 # private config
 /private

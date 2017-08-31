@@ -7,7 +7,7 @@ const path = require('path');
 import config from './config';
 import Line from './common/Line';
 import { lineIsValid } from './common/validateLine';
-import fb from './firebase-admin';
+import fb from './config/firebase-admin';
 
 let currentGridLines = [];
 let lines = [];
@@ -28,11 +28,11 @@ fb.ref('/grid/').on('value', function(snapshot) {
 
 
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, '../public/views'));
+app.set('views', path.join(__dirname, 'public/views'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res) {
   res.render('index', {
