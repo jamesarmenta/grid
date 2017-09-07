@@ -51,14 +51,13 @@ function init() {
   ctx.scale(2, 2);
   artboard.scale(2, 2);
   base.scale(2, 2);
-
-  if (typeof serverData !== 'undefined') {
-    localLines = serverData;
-  };
 }
 
 /* ----------  INITIAL SETUP  ---------- */
 
+if (typeof serverData !== 'undefined') {
+  localLines = serverData;
+};
 init();
 resetArtboard();
 

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "gulp build && node index.babel.js",
+    "start": "gulp build && node dist/index.babel.js",
     "test": "gulp test",
     "dev": "gulp",
     "build": "gulp build"
