@@ -41,7 +41,7 @@
     "gulp-sass": "^3.1.0",
     "gulp-strip-comments": "^2.5.1",
     "gulp-uglify": "^3.0.0",
-    "gulp-util": "^3.0.8",
+    "gulp-util": "^3.0.8"
   },
   "babel": {
     "presets": [
