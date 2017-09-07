@@ -10,7 +10,7 @@ node_modules/
 dist/
 
 # private config
-private/
+src/private/
 
 # misc
 .DS_Store
