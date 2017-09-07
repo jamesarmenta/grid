@@ -18,6 +18,18 @@
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.13",
     "chai": "^4.1.1",
+    "mocha": "^3.5.0",
+    "nodemon": "^1.11.0",
+    "pug": "^2.0.0-rc.3",
+    "webpack": "^3.5.5"
+  },
+  "dependencies": {
+    "ajv": "^5.2.2",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "firebase": "^4.3.0",
+    "firebase-admin": "^5.2.1",
+    "path": "^0.12.7",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
     "gulp-concat": "^2.6.1",
@@ -30,18 +42,6 @@
     "gulp-strip-comments": "^2.5.1",
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8",
-    "mocha": "^3.5.0",
-    "nodemon": "^1.11.0",
-    "pug": "^2.0.0-rc.3",
-    "webpack": "^3.5.5"
-  },
-  "dependencies": {
-    "ajv": "^5.2.2",
-    "body-parser": "^1.17.2",
-    "express": "^4.15.4",
-    "firebase": "^4.3.0",
-    "firebase-admin": "^5.2.1",
-    "path": "^0.12.7"
   },
   "babel": {
     "presets": [
