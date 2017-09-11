@@ -4,7 +4,7 @@ head
 body
   #container
     .on-board
-     p Click and drag create. Click a line to delete. Right-click for colors.
+     p Click and drag create. Click a line to delete. Right-click or two-finger tap for colors.
     #canvas_wrapper
       canvas#interactive
       canvas#artboard
@@ -17,5 +17,3 @@ body
     if data
         | var serverData = !{JSON.stringify(data)}
   script(src='/bundle.min.js')
-  //- Firebase should be parsed last
-  script(src='https://www.gstatic.com/firebasejs/4.3.0/firebase.js')
