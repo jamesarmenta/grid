@@ -23,8 +23,8 @@ var ctx, artboard, base;
 var grid = [];
 var localLines = [];
 var colors = [];
-var r = Math.round(Math.random()*colorOptions.length);
-var c = Math.round(Math.random()*colorOptions[r].length);
+var r = Math.round(Math.random() * colorOptions.length);
+var c = Math.round(Math.random() * colorOptions[r].length);
 var selectedColor = colorOptions[r][c];
 
 var mousePos = { x: 0, y: 0 };
@@ -75,11 +75,11 @@ function resetArtboard() {
     var cols = colorOptions.length;
     var rows = colorOptions[0].length;
 
-  for (var r = 0; r < rows; r++) {
-    colors[r] = [];
-    for (var c = 0; c < cols; c++) {
-        var xPos = canvasWidth / 2 * (c+.001) / cols;
-        var yPos = canvasHeight / 2 * (r+.001) / rows;
+    for (var r = 0; r < rows; r++) {
+      colors[r] = [];
+      for (var c = 0; c < cols; c++) {
+        var xPos = canvasWidth / 2 * (c + .001) / cols;
+        var yPos = canvasHeight / 2 * (r + .001) / rows;
         var width = canvasWidth / 2 / cols;
         var height = canvasHeight / 2 / rows;
 
@@ -282,12 +282,12 @@ function handleDownEvent(e) {
     for (var i = 0; i < colors.length; i++) {
       for (var j = 0; j < colors[i].length; j++) {
         var cur = colors[i][j];
-        if (mousePos.x > cur.x && mousePos.y > cur.y && 
+        if (mousePos.x > cur.x && mousePos.y > cur.y &&
           mousePos.x < cur.x + cur.width && mousePos.y < cur.y + cur.height) {
           selectedColor = cur.color;
         }
+      }
     }
-  }
     isSelectingColor = false;
     resetArtboard();
     return;
@@ -372,7 +372,7 @@ document.body.addEventListener('mousedown',
         isSelectingColor = !isSelectingColor;
         resetArtboard();
       } else {
-      handleDownEvent(e);
+        handleDownEvent(e);
       }
     }
   }, false);
@@ -394,10 +394,15 @@ document.body.addEventListener('mouseup',
 
 document.body.addEventListener('touchstart',
   function(e) {
-    if (e.target == canvas2 && e.touches.length < 2) {
-      e.preventDefault();
+    if (e.target == canvas2) {
+      if (e.touches.length < 2) {
+        e.preventDefault();
+        handleDownEvent(e);
+      } else {
+        isSelectingColor = !isSelectingColor;
+        resetArtboard();
+      }
     }
-    handleDownEvent(e);
   }, false);
 
 document.body.addEventListener('touchmove',
