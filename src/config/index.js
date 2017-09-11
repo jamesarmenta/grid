@@ -1,6 +1,6 @@
  const config = {
-    GRID_DOT_SIZE: 3,
-    GRID_LINE_SIZE: 9,
+    GRID_DOT_SIZE: 5,
+    GRID_LINE_SIZE: 10,
     GRID_COLOR: '#dfdfdf',
     GRID_NUMBER_ROW: 8,
     GRID_NUMBER_COL: 8,
