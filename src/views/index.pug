@@ -16,5 +16,6 @@ body
   script
     if data
         | var serverData = !{JSON.stringify(data)}
-  script(src='https://www.gstatic.com/firebasejs/4.3.0/firebase.js')
   script(src='/bundle.min.js')
+  //- Firebase should be parsed last
+  script(src='https://www.gstatic.com/firebasejs/4.3.0/firebase.js')

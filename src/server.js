@@ -74,8 +74,6 @@ function deleteLine(id) {
  // TODO: Check and update slope
  for (var i = 0; i < currentGridLines.length; i++) {
    if (currentGridLines[i].line.id == id) {
-    console.log('deleting line key'+currentGridLines[i].key);
-    console.log('with id'+id);
     fb.ref('/grid/'+currentGridLines[i].key).remove();
     return true;
    }
