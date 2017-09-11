@@ -1,9 +1,9 @@
 import config from '../config';
 import Line from '../common/Line';
 import { lineIsValid } from '../common/validateLine';
-import { fetchFail } from './error';
 import { requestPostLine, requestDeleteLine } from './lineRequest';
 import fb from './firebase-client';
+import colorOptions from '../config/colorOptions.js';
 
 fb.ref('/grid/').on('value', function(snapshot) {
   let lines = [];
@@ -22,9 +22,14 @@ var ctx, artboard, base;
 /* ----------  GLOBALS  ---------- */
 var grid = [];
 var localLines = [];
+var colors = [];
+var r = Math.round(Math.random()*colorOptions.length);
+var c = Math.round(Math.random()*colorOptions[r].length);
+var selectedColor = colorOptions[r][c];
 
 var mousePos = { x: 0, y: 0 };
 var isDragging = false;
+var isSelectingColor = false;
 var startingGridPoint = [0, 0];
 
 
@@ -66,56 +71,76 @@ function resetArtboard() {
   clear(base);
   clear(artboard);
 
+  if (isSelectingColor) {
+    var cols = colorOptions.length;
+    var rows = colorOptions[0].length;
 
-  // DRAW GRID
-  for (var i = 0; i < config.GRID_NUMBER_COL; i++) {
-    grid[i] = [];
+  for (var r = 0; r < rows; r++) {
+    colors[r] = [];
+    for (var c = 0; c < cols; c++) {
+        var xPos = canvasWidth / 2 * (c+.001) / cols;
+        var yPos = canvasHeight / 2 * (r+.001) / rows;
+        var width = canvasWidth / 2 / cols;
+        var height = canvasHeight / 2 / rows;
 
-    for (var j = 0; j < config.GRID_NUMBER_ROW; j++) {
-      var xPos = canvasWidth / 2 * ((i + 0.5) / config.GRID_NUMBER_COL);
-      var yPos = canvasHeight / 2 * ((j + 0.5) / config.GRID_NUMBER_ROW);
+        var cur = { x: xPos, y: yPos, width: width, height: height, color: colorOptions[c][r] };
 
-      grid[i].push({
-        x: xPos,
-        y: yPos,
-        radius: config.GRID_DOT_SIZE,
-        color: config.GRID_COLOR,
+        colors[r].push(cur);
+
+        drawRectangle(artboard, cur);
+      }
+    }
+  } else {
+    // DRAW GRID
+    for (var i = 0; i < config.GRID_NUMBER_COL; i++) {
+      grid[i] = [];
+
+      for (var j = 0; j < config.GRID_NUMBER_ROW; j++) {
+        var xPos = canvasWidth / 2 * ((i + 0.5) / config.GRID_NUMBER_COL);
+        var yPos = canvasHeight / 2 * ((j + 0.5) / config.GRID_NUMBER_ROW);
+
+        grid[i].push({
+          x: xPos,
+          y: yPos,
+          radius: config.GRID_DOT_SIZE,
+          color: config.GRID_COLOR,
+        });
+      }
+    }
+
+    for (var i = 0; i < grid.length; i++) {
+      for (var j = 0; j < grid[i].length; j++) {
+        drawCircle(artboard, grid[i][j]);
+      }
+    }
+
+    // DRAW LINES
+    for (var i = 0; i < localLines.length; i++) {
+      // look up positions in grid array
+      var current = localLines[i];
+
+      var start = grid[current.start[0]][current.start[1]];
+      var end = grid[current.end[0]][current.end[1]];
+      var currentColor = current.color;
+      var id = current.id;
+
+      drawLine(artboard, {
+        x0: start.x,
+        y0: start.y,
+        x1: end.x,
+        y1: end.y,
+        color: currentColor,
+      });
+
+      // Draw localLines w/ id as color on hidden base layer
+      drawLine(base, {
+        x0: start.x,
+        y0: start.y,
+        x1: end.x,
+        y1: end.y,
+        color: id,
       });
     }
-  }
-
-  for (var i = 0; i < grid.length; i++) {
-    for (var j = 0; j < grid[i].length; j++) {
-      drawCircle(artboard, grid[i][j]);
-    }
-  }
-
-  // DRAW LINES
-  for (var i = 0; i < localLines.length; i++) {
-    // look up positions in grid array
-    var current = localLines[i];
-
-    var start = grid[current.start[0]][current.start[1]];
-    var end = grid[current.end[0]][current.end[1]];
-    var currentColor = current.color;
-    var id = current.id;
-
-    drawLine(artboard, {
-      x0: start.x,
-      y0: start.y,
-      x1: end.x,
-      y1: end.y,
-      color: currentColor,
-    });
-
-    // Draw localLines w/ id as color on hidden base layer
-    drawLine(base, {
-      x0: start.x,
-      y0: start.y,
-      x1: end.x,
-      y1: end.y,
-      color: id,
-    });
   }
 }
 
@@ -151,7 +176,7 @@ function draw() {
     y0: startPoint.y,
     x1: mousePos.x,
     y1: mousePos.y,
-    color: 'red',
+    color: selectedColor,
   });
 }
 
@@ -227,6 +252,16 @@ function drawCircle(context, circle) {
   context.fill();
 }
 
+// Draws a rectangle
+// PARAMS: context, {x, y, width, height, color}
+function drawRectangle(context, rect) {
+  context.beginPath();
+  context.rect(rect.x, rect.y, rect.width, rect.height);
+  context.fillStyle = rect.color;
+  context.fill();
+}
+
+
 function rgbToHex(r, g, b) {
   let rHex = r.toString(16);
   let gHex = g.toString(16);
@@ -243,11 +278,26 @@ function rgbToHex(r, g, b) {
 function handleDownEvent(e) {
   mousePos = getMousePos(canvas2, e);
 
+  if (isSelectingColor) {
+    for (var i = 0; i < colors.length; i++) {
+      for (var j = 0; j < colors[i].length; j++) {
+        var cur = colors[i][j];
+        if (mousePos.x > cur.x && mousePos.y > cur.y && 
+          mousePos.x < cur.x + cur.width && mousePos.y < cur.y + cur.height) {
+          selectedColor = cur.color;
+        }
+    }
+  }
+    isSelectingColor = false;
+    resetArtboard();
+    return;
+  }
+
   var closestIndices = findClosestGridPoint(mousePos.x, mousePos.y);
 
   // If click is at an grid point, start dragging
   if (isGridHit(mousePos, closestIndices)) {
-    startingGridPoint = [closestIndices[0], closestIndices[1]]
+    startingGridPoint = [closestIndices[0], closestIndices[1]];
     isDragging = true;
   } else {
     // Click is not at a grid point, assess click coordinates,
@@ -283,8 +333,6 @@ function handleUpEvent(e) {
     );
 
     if (spansPoints && isGridHit(mousePos, closestGridPoint)) {
-      //example code
-      let exampleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 
       let start = startingGridPoint;
       let end = closestGridPoint;
@@ -296,7 +344,7 @@ function handleUpEvent(e) {
         end = temp;
       }
 
-      let currentLine = new Line(start, end, exampleColor);
+      let currentLine = new Line(start, end, selectedColor);
       // Check if line is valid
       if (lineIsValid(currentLine)) {
         saveLine(currentLine);
@@ -318,7 +366,20 @@ function handleResize() {
 /* ----------  EVENT LISTENERS  ----------*/
 document.body.addEventListener('mousedown',
   function(e) {
-    handleDownEvent(e);
+    if (e.target == canvas2) {
+      if (e.button == 2) {
+        e.preventDefault();
+        isSelectingColor = !isSelectingColor;
+        resetArtboard();
+      } else {
+      handleDownEvent(e);
+      }
+    }
+  }, false);
+
+document.body.addEventListener('contextmenu',
+  function(e) {
+    e.preventDefault();
   }, false);
 
 document.body.addEventListener('mousemove',
