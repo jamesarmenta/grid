@@ -8,9 +8,10 @@ const gulp = require('gulp'),
   livereload = require('gulp-livereload'),
   mocha = require('gulp-mocha'),
   nodemon = require('gulp-nodemon'),
-  uglify = require('gulp-uglify'),
+  uglify = require('gulp-uglify-es').default,
   babel = require('babel-core/register'),
   webpack = require('webpack'),
+  rename = require("gulp-rename"),
   path = require('path'),
   gutil = require('gulp-util'),
   reload = browserSync.reload;
@@ -100,17 +101,22 @@ gulp.task('js', function() {
     output: {
       path: path.join(__dirname, 'dist/public'),
       filename: 'bundle.js',
-    }
+    },
   }
   var myConfig = Object.create(webpackConfig);
 
   // run webpack
   webpack(myConfig, function(err, stats) {
     if (err) throw new gutil.PluginError('webpack', err);
-    gutil.log('[webpack]', stats.toString({
-      colors: true,
-      progress: false
-    }));
+    // gutil.log('[webpack]', stats.toString({
+    //   colors: true,
+    //   progress: false
+    // }));
+    // 
+    gulp.src('dist/public/bundle.js')
+    .pipe(uglify())
+    .pipe(rename('bundle.min.js'))
+    .pipe(gulp.dest('dist/public/'));
   });
 });
 
