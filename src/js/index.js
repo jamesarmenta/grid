@@ -367,7 +367,7 @@ function handleResize() {
 document.body.addEventListener('mousedown',
   function(e) {
     if (e.target == canvas2) {
-      if (e.button == 2) {
+      if (e.button == 2 || e.ctrlKey) {
         e.preventDefault();
         isSelectingColor = !isSelectingColor;
         resetArtboard();
